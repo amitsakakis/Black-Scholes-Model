@@ -2,6 +2,7 @@ import numpy as np
 from scipy.stats import norm
 import streamlit as st
 import plotly.graph_objs as go
+import yfinance as yf  # Added for pulling stock data
 
 class BlackScholesModel:
     def __init__(self, S, K, T, r, sigma):
@@ -37,6 +38,27 @@ class BlackScholesModel:
         rho = self.K * self.T * np.exp(-self.r * self.T) * norm.cdf(d2) if option_type == 'Call' else (
               -self.K * self.T * np.exp(-self.r * self.T) * norm.cdf(-d2))
         return {'delta': delta, 'gamma': gamma, 'theta': theta, 'vega': vega, 'rho': rho}
+
+def fetch_stock_data(ticker):
+    stock_data = yf.Ticker(ticker)
+    hist = stock_data.history(period="1y")
+    return hist
+
+def plot_broker_order_flow(ticker):
+    hist = fetch_stock_data(ticker)
+    fig = go.Figure()
+    
+    fig.add_trace(go.Scatter(x=hist.index, y=hist['Close'], mode='lines', name='Closing Price'))
+    fig.add_trace(go.Bar(x=hist.index, y=hist['Volume'], name='Volume', yaxis='y2', opacity=0.5))
+    
+    fig.update_layout(
+        title=f'Order Flow Analysis for {ticker}',
+        yaxis=dict(title='Price'),
+        yaxis2=dict(title='Volume', overlaying='y', side='right'),
+        xaxis_title='Date',
+        legend=dict(x=0, y=1.1, orientation='h')
+    )
+    return fig
 
 def plot_option_prices(variable, values, S, K, T, r, sigma, option_type):
     if variable == "Stock Price(S)":
@@ -80,22 +102,6 @@ def plot_greeks(variable, values, S, K, T, r, sigma, option_type):
                       yaxis_title='Value')
     return fig
 
-def plot_volatility_surface(S, K, T, r, sigma):
-    strikes = np.linspace(50, 150, 10)
-    maturities = np.linspace(0.1, 2, 10)
-    volatilities = np.random.rand(10, 10) * sigma
-
-    fig = go.Figure(data=[go.Surface(z=volatilities, x=strikes, y=maturities)])
-    fig.update_layout(
-        title='Volatility Surface',
-        scene=dict(
-            xaxis_title='Strike Price',
-            yaxis_title='Time to Maturity',
-            zaxis_title='Implied Volatility'
-        )
-    )
-    return fig
-
 def main():
     st.set_page_config(page_title="Black-Scholes Option Pricing Model", layout="wide")
 
@@ -134,7 +140,7 @@ def main():
         
     if variable_to_plot == "Stock Price(S)":
         values = np.linspace(50, 150, 100)
-    elif variable_to_plot == "Strike Price(K)":  
+    elif variable_to_plot == "Strike Price(K)":
         values = np.linspace(50, 150, 100)
     elif variable_to_plot == "Time to Maturity(T)":
         values = np.linspace(0.1, 2, 100)
@@ -150,10 +156,10 @@ def main():
         fig_greeks = plot_greeks(variable_to_plot, values, S, K, T, r, sigma, option_type)
         st.plotly_chart(fig_greeks)
 
-    plot_volatility_surface_button = st.button("Plot Volatility Surface")
-    if plot_volatility_surface_button:
-        fig_vol_surface = plot_volatility_surface(S, K, T, r, sigma)
-        st.plotly_chart(fig_vol_surface)
+    st.markdown("<h2 style='text-align: left;'>Broker Order Flow Analysis</h2>", unsafe_allow_html=True)
+    ticker = st.text_input("Enter Stock Ticker", value="AAPL")
+    fig_order_flow = plot_broker_order_flow(ticker)
+    st.plotly_chart(fig_order_flow)
 
 if __name__ == "__main__":
     main()
