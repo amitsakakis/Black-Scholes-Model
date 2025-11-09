@@ -1,62 +1,49 @@
-<h1 align="center">Black-Scholes Options Model with Greeks</h1>
+<h1 align="center">Advanced Options Pricing Models</h1>
 
 ## Project Description
 
-This project is a Black-Scholes Options Pricing Calculator for European Options, including graphical visualization of the Option Greeks. It is a web-hosted interactive application, hosted using [Streamlit's](https://streamlit.io) Sharing functionality.
+This web app prices European call and put options using three different models — Black-Scholes, Binomial Tree, and Monte Carlo. It also calculates Greeks and includes visualizations for each model. Built in Python with Streamlit.
 
-The project can be found here: [Link to Project](https://blackscholeswithgreeks.streamlit.app)
+Live app: https://blackscholeswithgreeks.streamlit.app
 
-## Black-Scholes Model
+## Models
 
-The **Black-Scholes model**, also known as the **Black-Scholes-Merton (BSM) model**, is a key concept in modern financial theory. This mathematical equation estimates the theoretical **value of options**, considering the impact of time and other risk factors.
+### Black-Scholes Model
+A closed-form solution for pricing European options. It uses inputs such as stock price, strike price, time to expiry, volatility and the risk-free rate.
 
-The Black-Scholes equation requires **five variables**:
+### Binomial Tree Model
+A discrete-time approach. The stock price moves up or down at each step, and the option value is calculated backward through the tree. With more steps, it approaches the Black-Scholes price.
 
-- **Volatility** of the underlying asset.
-- **Price** of the underlying asset.
-- **Strike price** of the option.
-- **Time until expiration** of the option.
-- **Risk-free interest rate**.
+### Monte Carlo Simulation
+Simulates a large number of possible future stock price paths. The option price is the discounted average of the payoffs across all simulations.
 
-## Black-Scholes Model Assumptions
+## Features
 
-The Black-Scholes model makes several assumptions:
+- Pricing using Black-Scholes, Binomial, and Monte Carlo models  
+- Calculation of Delta, Gamma, Theta, Vega and Rho  
+- Binomial tree visualization  
+- Monte Carlo price paths and payoff distribution  
+- Convergence of Binomial and Monte Carlo to Black-Scholes  
+- Basic order flow chart using historical price and volume data
 
-- No dividends are paid out during the life of the option.
-- Markets are random (market movements cannot be predicted).
-- There are no transaction costs in buying the option.
-- The risk-free rate and volatility of the underlying asset are known and constant.
-- The returns on the underlying asset are log-normally distributed.
-- The option is European and can only be exercised at expiration.
+## Option Greeks
 
-## Call and Put Option Price Formulas
+- **Delta** – Sensitivity of option price to stock price  
+- **Gamma** – Rate of change of Delta  
+- **Theta** – Time decay of the option’s value  
+- **Vega** – Sensitivity to changes in volatility  
+- **Rho** – Sensitivity to changes in interest rate
 
-Call option (C) and put option (P) prices are calculated using the following formulas:
+## Assumptions (Black-Scholes)
 
-![Call Option Formula](call-formula.jpg)
-![Put Option Formula](put-formula.jpg)
+- European options only (no early exercise)  
+- No dividends paid during the contract  
+- No transaction costs or taxes  
+- Constant risk-free rate and volatility  
+- Stock returns are log-normally distributed  
+- Markets are efficient
 
-The formulas for d1 and d2 are:
+## License
 
-![d1 and d2 Formulas](d1-d2-formula.jpg)
-
-## The Option Greeks
-
-"The Greeks" measure the sensitivity of the value of an option to changes in parameter values while holding other parameters fixed. They are partial derivatives of the price concerning the parameter values.
-
-The Greeks include:
-
-- **Delta**: Sensitivity to changes in the price of the underlying asset.
-- **Gamma**: Sensitivity to changes in Delta.
-- **Theta**: Sensitivity to the passage of time.
-- **Vega**: Sensitivity to volatility.
-- **Rho**: Sensitivity to the risk-free interest rate.
-
-Their formulas can be seen below:
-
-![Greek Formulas](greeks.png)
-
-## 📝 License
-
-© 2024 [Akaash Mitsakakis-Nath](https://github.com/amitsakakis).<br />
-This project is MIT licensed.
+© 2024 Akaash Mitsakakis-Nath  
+MIT License
